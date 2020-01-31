@@ -197,11 +197,11 @@ namespace GoogleARCore.Examples.HelloAR
         /// </summary>
         private void _UpdateApplicationLifecycle()
         {
-            // Exit the app when the 'back' button is pressed.
-            if (Input.GetKey(KeyCode.Escape))
-            {
-                Application.Quit();
-            }
+            //// Exit the app when the 'back' button is pressed.
+            //if (Input.GetKey(KeyCode.Escape))
+            //{
+            //    Application.Quit();
+            //}
 
             // Only allow the screen to sleep when not tracking.
             if (Session.Status != SessionStatus.Tracking)

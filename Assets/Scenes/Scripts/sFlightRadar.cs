@@ -51,8 +51,6 @@ public class sFlightRadar : MonoBehaviour
     Vector3 _MortarTailPos0;
 
     // ===========================================================================================
-    // Перенос из OKO-3
-    // ===========================================================================================
 
     // Корневая часть запроса к ADS-B Exchange
     //String REQUEST_BASE_URL = "http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?";
@@ -145,7 +143,7 @@ public class sFlightRadar : MonoBehaviour
     bool myPrimaryDataProc = true; // Выполняется первичная обработка данных (в фоновом потоке), вторичную обработку не начинать!
     bool mySecondaryDataProc = false; // Выполняется вторичная обработка данных (в корутине), первичную обработку не начинать!
     bool myBanner1AddInfo = false; // Выводить ли на баннер с краткой информацией дополнительную информацию
-
+    int _EscapeCount = 0; // Счетчик для выхода из программы
 
     // ******************************************************************
 
@@ -1885,9 +1883,13 @@ public class sFlightRadar : MonoBehaviour
         {
             mySI = !mySI;
         }
-        else if (Input.GetKey(KeyCode.Escape)) // Клавиша "Esc" (в Android смартфоне - "Back"): Выйти из программы
+        else if (Input.GetKeyDown(KeyCode.Escape)) // Клавиша "Esc" (в Android смартфоне - "Back"): Выйти из программы
         {
-            Application.Quit();
+            _EscapeCount++;
+            if (_EscapeCount > 3) // Нажать выход 3 раза
+            {
+                Application.Quit();
+            }
         }
 
         // Основная часть - управление положением самолетов

@@ -85,7 +85,7 @@ public class sTextMessage : MonoBehaviour
         transform.localPosition = Vector3.zero;
         transform.localEulerAngles = Vector3.zero;
         // Передвинуть себя на 33 метра вперед
-        transform.Translate(Vector3.forward * 33);
+        transform.Translate(Vector3.forward * 5);
         //transform.Translate(Vector3.forward * 1);
         // Откорректировать, чтобы угол крена был 0
         Vector3 myEu = transform.eulerAngles;
@@ -147,7 +147,7 @@ public class sTextMessage : MonoBehaviour
             myEu.z = Mathf.SmoothDampAngle(myEu.z, 0.0f, ref myVelocityZ, myCenterTime);
             transform.localEulerAngles = myEu;
             // Передвинуть себя на 33 метра вперед
-            transform.Translate(Vector3.forward * 33);
+            transform.Translate(Vector3.forward * 5);
             //transform.Translate(Vector3.forward * 1);
             // Откорректировать, чтобы угол крена был 0
             myEu = transform.eulerAngles;

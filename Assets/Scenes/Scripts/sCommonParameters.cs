@@ -24,6 +24,10 @@ public class sCommonParameters : MonoBehaviour
     [NonSerialized]
     public Vector3 WorldScale;
 
+    // Режим коррекции положения корневого объекта относительно ARCore якоря
+    [NonSerialized]
+    public bool MapCorrectionMode = true;
+
     // Класс управления картой MapBox
     [SerializeField]
     private AbstractMap _AbsMap;
@@ -42,6 +46,7 @@ public class sCommonParameters : MonoBehaviour
 
     // Продолжительность перелета в заданную точку, сек
     public float MortarFlightTime = 2.0f;
+
     // Положение в начале сеанса
     [NonSerialized] public Vector3 MortarHomePos = new Vector3(0, 3000, -4500);
     [NonSerialized] public Vector3 MortarHomeEu = new Vector3(0, 0, 0);

@@ -9,7 +9,7 @@ public class sUtils : MonoBehaviour
     [SerializeField]
     Camera _MainCam;
 
-    // Дополниткльная (правая) камера (установить в Inspector)
+    // Дополнительная (правая) камера (установить в Inspector)
     [SerializeField]
     Camera _RightCam;
 
@@ -38,13 +38,7 @@ public class sUtils : MonoBehaviour
         _SliderFOV.value = _FOV;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    // Значение слайдера изменено (вызлв установлен в свойствах слайдера SliderFOV в Inspector)
+    // Значение слайдера изменено (вызов установлен в свойствах слайдера SliderFOV в Inspector)
     public void SliderValueChanged()
     {
         _FOV = (int)_SliderFOV.value;

@@ -34,6 +34,7 @@ public class sMortarMovement : MonoBehaviour
     float myStartTime;
 
     // Вспомогательный объект - точка проекции камеры на горизонтальную плоскость аватара
+    [SerializeField]
     Transform _CameraPlumb;
 
 
@@ -49,10 +50,7 @@ public class sMortarMovement : MonoBehaviour
                 throw new System.Exception("You must have a reference camera assigned!");
             }
         }
-
-        // Вспомогательный объект - точка проекции камеры на горизонтальную плоскость аватара
-        _CameraPlumb = transform.Find("CameraPlumb");
-    }
+   }
 
     void LateUpdate()
 	{
