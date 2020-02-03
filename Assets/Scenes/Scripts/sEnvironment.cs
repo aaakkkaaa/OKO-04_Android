@@ -142,7 +142,7 @@ public class sEnvironment : MonoBehaviour {
     }
 
     // Включить следующий объект из массива
-    int MyFuncSwitch(GameObject[] myObjects, int myPointer)
+    private int MyFuncSwitch(GameObject[] myObjects, int myPointer)
     {
         int myCount = myObjects.Length;
         myPointer++;
@@ -163,4 +163,25 @@ public class sEnvironment : MonoBehaviour {
         }
         return myPointer;
     }
+
+    public int SwitchEnv(string envType)
+    {
+        switch (envType)
+        {
+            case "Glides":
+                myActiveGlidePath = MyFuncSwitch(myGlidePaths, myActiveGlidePath);
+                return myActiveGlidePath;
+                //break;
+            case "STARs":
+                myActiveStarPath = MyFuncSwitch(myStarPaths, myActiveStarPath);
+                return myActiveStarPath;
+                //break;
+            case "IFs":
+                myActiveIFPoint = MyFuncSwitch(myIFPoints, myActiveIFPoint);
+                return myActiveIFPoint;
+                //break;
+        }
+        return -1;
+    }
+
 }

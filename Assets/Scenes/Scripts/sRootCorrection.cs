@@ -18,9 +18,13 @@ public class sRootCorrection : MonoBehaviour
     [SerializeField]
     Text _Text3;
 
+    // Класс для переключения объектов (глиссад и т.д.)
+    [SerializeField]
+    sEnvironment _Env;
+
     // Скорость коррекции положения по горизонтали
     [SerializeField]
-    float _HorSpeed = 0.0001f;
+    float _HorSpeed = 1.0f;
 
     // Основная камера (установить в Inspector)
     [SerializeField]
@@ -30,8 +34,33 @@ public class sRootCorrection : MonoBehaviour
     [SerializeField]
     Camera _RightCam;
 
+    // Меню настроек
+    [SerializeField]
+    GameObject _Menu;
+
+    // Выбранная глиссада
+    [SerializeField]
+    Text _GlidesText;
+
+    // Выбранный подход
+    [SerializeField]
+    Text _STARsText;
+
+    // Выбранная точка IF
+    [SerializeField]
+    Text _IFsText;
+
+    // Отображение баннеров путевых точек
+    [SerializeField]
+    Text _BannersText;
+
     // Поле зрения в градусах
     int _FOV;
+
+    string _GlidesStr = " 1 2 3 4 5 6 − ";
+    string _STARsStr = " 1 2 3 4 5 − ";
+    string _IFsStr = " E W − ";
+    string _BannersStr = " + − ";
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +71,7 @@ public class sRootCorrection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Если режим коррекции корневого объекта включен
+        // Коррекция корневого объекта
         if (_ComPars.MapCorrectionMode)
         {
             float x = -Input.GetAxis("Horizontal");
@@ -55,9 +84,9 @@ public class sRootCorrection : MonoBehaviour
             {
                 //_Text3.text = "Сдвиг X = " + (_HorSpeed * x / 1000000) + " Сдвиг Y = " + +(_HorSpeed * y / 1000000) + " Сдвиг Z = " + +(_HorSpeed * z / 1000000);
                 Vector3 pos = transform.localPosition;
-                pos.x += _HorSpeed * x / 1000000;
-                pos.z += _HorSpeed * z / 1000000;
-                pos.y += _HorSpeed * z / 1000000;
+                pos.x += _HorSpeed * x / 10;
+                pos.z += _HorSpeed * z / 10;
+                pos.y += _HorSpeed * y / 10;
                 transform.localPosition = pos;
                 //_WorldMessage.myFuncShowMessage("Новое положение = " + transform.position, 3);
             }
@@ -65,8 +94,8 @@ public class sRootCorrection : MonoBehaviour
             {
                 //_Text3.text = "Поворот = " + (_HorSpeed * yaw / 1000000);
                 Vector3 eu = transform.localEulerAngles;
-                eu.y += _HorSpeed * yaw / 1000000;
-                transform.localPosition = eu;
+                eu.y += _HorSpeed * yaw;
+                transform.localEulerAngles = eu;
                 //_WorldMessage.myFuncShowMessage("Новый поворот = " + transform.eulerAngles.y, 3);
             }
             if (f != 0)
@@ -79,7 +108,109 @@ public class sRootCorrection : MonoBehaviour
                _WorldMessage.myFuncShowMessage("Новый FOV = " + _FOV, 3);
             }
         }
+
+        // Переключение глиссад
+        if (_ComPars.GlideSelection)
+        {
+            // Нажата кнопка "B"
+            if (Input.GetButtonDown("JoyButt1"))
+            {
+                int newGlide = _Env.SwitchEnv("Glides");
+                _WorldMessage.myFuncShowMessage("Новая глиссада = " + newGlide, 3);
+                string myString;
+                _GlidesStr = " 1 2 3 4 5 6 − ";
+                switch (newGlide)
+                {
+                    case 0:
+                        myString = "[" + _GlidesStr.Substring(1, 1) + "]" + _GlidesStr.Substring(3);
+                        break;
+                    case 1:
+                        myString = _GlidesStr.Substring(0, 2) + "[" + _GlidesStr.Substring(3, 1) + "]" + _GlidesStr.Substring(5);
+                        break;
+                    case 2:
+                        myString = _GlidesStr.Substring(0, 4) + "[" + _GlidesStr.Substring(5, 1) + "]" + _GlidesStr.Substring(7);
+                        break;
+                    case 3:
+                        myString = _GlidesStr.Substring(0, 6) + "[" + _GlidesStr.Substring(7, 1) + "]" + _GlidesStr.Substring(9);
+                        break;
+                    case 4:
+                        myString = _GlidesStr.Substring(0, 8) + "[" + _GlidesStr.Substring(9, 1) + "]" + _GlidesStr.Substring(11);
+                        break;
+                    case 5:
+                        myString = _GlidesStr.Substring(0, 10) + "[" + _GlidesStr.Substring(11, 1) + "]" + _GlidesStr.Substring(13);
+                        break;
+                    case -1:
+                        myString = _GlidesStr.Substring(0, 12) + "[" + _GlidesStr.Substring(13, 1) + "]" + _GlidesStr.Substring(15);
+                        break;
+                    default:
+                        myString = "Ошибка";
+                        break;
+                }
+                _GlidesText.text = myString;
+
+            }
+        }
+
+        // Переключение подходов
+        if (_ComPars.STARselection)
+        {
+            // Нажата кнопка "B"
+            if (Input.GetButtonDown("JoyButt1"))
+            {
+                int newSTAR = _Env.SwitchEnv("STARs");
+                _WorldMessage.myFuncShowMessage("Новый подход = " + newSTAR, 3);
+                string myString;
+                _STARsStr = " 1 2 3 4 5 − ";
+                switch (newSTAR)
+                {
+                    case 0:
+                        myString = "[" + _STARsStr.Substring(1, 1) + "]" + _STARsStr.Substring(3);
+                        break;
+                    case 1:
+                        myString = _STARsStr.Substring(0, 2) + "[" + _STARsStr.Substring(3, 1) + "]" + _STARsStr.Substring(5);
+                        break;
+                    case 2:
+                        myString = _STARsStr.Substring(0, 4) + "[" + _STARsStr.Substring(5, 1) + "]" + _STARsStr.Substring(7);
+                        break;
+                    case 3:
+                        myString = _STARsStr.Substring(0, 6) + "[" + _STARsStr.Substring(7, 1) + "]" + _STARsStr.Substring(9);
+                        break;
+                    case 4:
+                        myString = _STARsStr.Substring(0, 8) + "[" + _STARsStr.Substring(9, 1) + "]" + _STARsStr.Substring(11);
+                        break;
+                    case -1:
+                        myString = _STARsStr.Substring(0, 10) + "[" + _STARsStr.Substring(11, 1) + "]" + _STARsStr.Substring(13);
+                        break;
+                    default:
+                        myString = "Ошибка";
+                        break;
+                }
+                _STARsText.text = myString;
+            }
+        }
+
+
+        // Нажата кнопка "Y" - Вызвать меню настроек
+        if (Input.GetButtonDown("JoyButt3"))
+        {
+            //_WorldMessage.myFuncShowMessage("Нажата кнопка Y", 2);
+            if (_Menu.activeSelf)
+            {
+                _Menu.SetActive(false); // Спрятать меню
+            }
+            else
+            {
+                _Menu.transform.parent = Camera.main.transform; // временно перенести меню в дети камеры
+                _Menu.transform.localPosition = Vector3.forward * 5; // поместить перед камерой
+                _Menu.transform.localEulerAngles = Vector3.zero; // выровнять перед камерой
+                _Menu.transform.parent = null; // вернуть меню в корень сцены
+                _Menu.SetActive(true); // включить меню
+            }
+        }
     }
+
+
+
 
 
 

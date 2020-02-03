@@ -24,9 +24,27 @@ public class sCommonParameters : MonoBehaviour
     [NonSerialized]
     public Vector3 WorldScale;
 
+    // Режимы для меню настроек ----------------------
+
     // Режим коррекции положения корневого объекта относительно ARCore якоря
     [NonSerialized]
-    public bool MapCorrectionMode = true;
+    public bool MapCorrectionMode = false;
+
+    // Режим выбора глиссад
+    [NonSerialized]
+    public bool GlideSelection = false;
+
+    // Режим выбора подходов
+    [NonSerialized]
+    public bool STARselection = false;
+
+    // Режим выбота точек IF
+    public bool IFselection = false;
+
+    // Режим включения/выключения баннеров
+    public bool BannersSwitch = false;
+
+    // ------------------------------------------------
 
     // Класс управления картой MapBox
     [SerializeField]
