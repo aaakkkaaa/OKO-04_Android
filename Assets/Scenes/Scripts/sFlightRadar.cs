@@ -61,12 +61,6 @@ public class sFlightRadar : MonoBehaviour
     // Полный текст запроса к серверу
     //String myURL;
 
-    // Высота аэропорта над уровнем моря
-    [SerializeField]
-    float myAirport_ALt = 192;
-    // Расстояние от начальной точки (км), на котором следить за самолетами
-    [SerializeField]
-    float myDistance = 60.0f;
     // Один фут, метров
     [SerializeField]
     float myFeet = 0.3048f;
@@ -412,27 +406,9 @@ public class sFlightRadar : MonoBehaviour
         // OpenSky
 
         Vector3 myStartGeoCoord = _ComPars.WorldToGeoPosition(Vector3.zero);
-        myStartLatitude = myStartGeoCoord.x;
-        myStartLongitude = myStartGeoCoord.y;
-        print("Контрольная точка аэродрома: " + myStartLatitude + "," + myStartLongitude);
+        _ComPars.setWebRequest(myStartGeoCoord.x, myStartGeoCoord.y);
 
-        Vector3 myQQ = _ComPars.GeoToWorldPosition(myStartLatitude, myStartLongitude);
-        //myQQ = _ComPars.GeoToWorldPosition0(myStartLatitude, myStartLongitude);
-        myQQ = _ComPars.GeoToWorldPosition(56.00778f, 37.66028f);
-       // myQQ = _ComPars.GeoToWorldPosition0(56.00778f, 37.66028f);
-
-        // Границы прямоугольника +/-(myDistance/2)
-        float myLatHalfDistance = myDistance / 111.111f; //111.111 - длина одного градуса меридиана в км
-        float myLongHalfDistance = myDistance / Mathf.Cos(myStartLatitude * Mathf.Deg2Rad) / 111.111f;
-        float myWestMargin = myStartLatitude - myLatHalfDistance;
-        float myEastMargin = myStartLatitude + myLatHalfDistance;
-        float myNorthMargin = myStartLongitude + myLongHalfDistance;
-        float mySouthMargin = myStartLongitude - myLongHalfDistance;
-
-        _WebData.URL = REQUEST_OpenSky_BASE_URL + "lamin=" + myWestMargin + "&lomin=" + mySouthMargin + "&lamax=" + myEastMargin + "&lomax=" + myNorthMargin;
-
-        print("myURL = " + _WebData.URL);
-
+        print("myURL = " + _ComPars.URL);
 
         // Трансформ шаблона самолетов - получить указатель и сразу спрятать
         mySamplePlane = GameObject.Find("SamplePlane").transform;
@@ -626,7 +602,7 @@ public class sFlightRadar : MonoBehaviour
         StartCoroutine(myFuncProcData());
 
         // Для работы с высотой в Иннсбруке
-        if (myAirport_ALt == 581.0f)
+        if (_ComPars.AirportALt == 581.0f)
         {
             StartCoroutine(myFuncInnsbrukSpecial());
         }
@@ -637,7 +613,7 @@ public class sFlightRadar : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         Vector3 myPos = myMap.transform.position;
-        myPos.y = -myAirport_ALt;
+        myPos.y = -_ComPars.AirportALt;
         myMap.transform.position = myPos;
     }
 
@@ -1012,7 +988,7 @@ public class sFlightRadar : MonoBehaviour
                             // Преобразуем полученные данные (высоту в футах и географические координаты) в положение в пространстве сцены
 
                             Vector3 myResponsedPosition = _ComPars.GeoToWorldPosition(myOnePlanePars.latitude, myOnePlanePars.longitude) / _ComPars.WorldScale.y;
-                            myResponsedPosition.y = Mathf.Max(myOnePlanePars.geo_altitude - myAirport_ALt, 0.0f); // Высота
+                            myResponsedPosition.y = Mathf.Max(myOnePlanePars.geo_altitude - _ComPars.AirportALt, 0.0f); // Высота
 
                             myPlane.RawPosition = myResponsedPosition; // сразу запомним полученное положение (для отладки - ручного анализа)
                             _Record.MyLog(myKey, "ProcData", "=== myFuncThread(): ключ = " + myKey + " Полученные данные. Raw Position = " + myPlane.RawPosition);
@@ -1089,7 +1065,7 @@ public class sFlightRadar : MonoBehaviour
                     else // истории данного самолета еще нет
                     {
                         //Vector3 myResponsedPosition;
-                        //myResponsedPosition.y = Mathf.Max(myOnePlanePars.geo_altitude - myAirport_ALt, 0.0f); // Высота
+                        //myResponsedPosition.y = Mathf.Max(myOnePlanePars.geo_altitude - _ComPars.AirportALt, 0.0f); // Высота
                         //Vector2d worldPosition = Conversions.GeoToWorldPosition(myOnePlanePars.latitude, myOnePlanePars.longitude, myCenterMercator, myWorldRelativeScale);
 
                         //_Record.MyLog(myKey, "ProcData", "=== myFuncThread(): ключ = " + myKey + " !!!! Lat = " + myOnePlanePars.latitude + " Long = " + myOnePlanePars.longitude + " myCenterMercator = " + myCenterMercator + " myWorldRelativeScale = " + myWorldRelativeScale + " worldPosition = " + worldPosition);
@@ -1099,7 +1075,7 @@ public class sFlightRadar : MonoBehaviour
                         //myPlane.Position = myResponsedPosition + myPosShift;
 
                         Vector3 myResponsedPosition = _ComPars.GeoToWorldPosition(myOnePlanePars.latitude, myOnePlanePars.longitude) / _ComPars.WorldScale.y;
-                        myResponsedPosition.y = Mathf.Max(myOnePlanePars.geo_altitude - myAirport_ALt, 0.0f); // Высота
+                        myResponsedPosition.y = Mathf.Max(myOnePlanePars.geo_altitude - _ComPars.AirportALt, 0.0f); // Высота
                         myPlane.Position = myResponsedPosition;
 
                         myPlane.BadPosCounter = 0;
@@ -1866,15 +1842,15 @@ public class sFlightRadar : MonoBehaviour
         // Сначала чуть-чуть управления
         if (Input.GetKeyDown("-")) // Клавиша "минус": "Опустить" все самолеты на 10 метров (увеличить высоту аэропорта над уровнем моря)
         {
-            myAirport_ALt += 10.0f;
-            myWorldMessage.myFuncShowMessage("Самолеты ниже на 10 м.\nНовая высота Н.У.М. = " + myAirport_ALt, 3.0f);
+            _ComPars.AirportALt += 10.0f;
+            myWorldMessage.myFuncShowMessage("Самолеты ниже на 10 м.\nНовая высота Н.У.М. = " + _ComPars.AirportALt, 3.0f);
         }
         else if (Input.GetKeyDown("=")) // Клавиша "плюс": "Поднять" все самолеты на 10 метров (уменьшить высоту аэропорта над уровнем моря)
         {
-            myAirport_ALt -= 10.0f;
-            myWorldMessage.myFuncShowMessage("Самолеты выше на 10 м.\nНовая высота Н.У.М. = " + myAirport_ALt, 3.0f);
+            _ComPars.AirportALt -= 10.0f;
+            myWorldMessage.myFuncShowMessage("Самолеты выше на 10 м.\nНовая высота Н.У.М. = " + _ComPars.AirportALt, 3.0f);
         }
-        else if (Input.GetKeyDown("i")) // Клавиша "i": Вывести / убрать с баннера самолета с краткой информацией дополнительную информацию
+        else if (Input.GetKeyDown("i") || Input.GetButtonDown("JoyButt2")) // Клавиша "i" или кнопка геймпада "X": Вывести / убрать с баннера самолета с краткой информацией дополнительную информацию
         {
             myBanner1AddInfo = !myBanner1AddInfo;
             myAddInfoWasChaged = true; // Пока только установим признак изменения, само изменение позже, в цикле обработки всех самолетов

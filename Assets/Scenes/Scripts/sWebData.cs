@@ -7,12 +7,15 @@ using UnityEngine.Networking;
 
 public class sWebData : MonoBehaviour
 {
+    // Класс, содержащий общие параметры и методы для работы с ними
+    private sCommonParameters _ComPars;
+
     // Желательное время цикла запроса данных, сек.
     [SerializeField]
     float _WebCycleTime = 5.0f;
 
     // Полный текст запроса к серверу
-    public String URL;
+    // public String URL;
 
     // Время прихода новых данных от сервера.
     public long ResponseTime = 0;
@@ -35,6 +38,9 @@ public class sWebData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Класс, содержащий общие параметры и методы для работы с ними
+        _ComPars = gameObject.GetComponent<sCommonParameters>();
+
         // Параметры времени
         _Time = transform.GetComponent<sTime>();
 
@@ -58,10 +64,10 @@ public class sWebData : MonoBehaviour
         while (true)
         {
             myWebRequestTime = _Time.CurrentTime();
-            _Record.MyLog("RawData", "@@@ GetWebData(): Начинаю запрос. Время = " + myWebRequestTime + " myURL = " + URL);
+            _Record.MyLog("RawData", "@@@ GetWebData(): Начинаю запрос. Время = " + myWebRequestTime + " myURL = " + _ComPars.URL);
 
             // Готовим запрос
-            UnityWebRequest myRequest = UnityWebRequest.Get(URL);
+            UnityWebRequest myRequest = UnityWebRequest.Get(_ComPars.URL);
             // Выполняем запрос и получаем ответ
             yield return myRequest.SendWebRequest();
             // Зафиксируем время ответа и интервал времени от предыдущего ответа

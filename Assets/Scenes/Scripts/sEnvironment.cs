@@ -180,6 +180,28 @@ public class sEnvironment : MonoBehaviour {
                 myActiveIFPoint = MyFuncSwitch(myIFPoints, myActiveIFPoint);
                 return myActiveIFPoint;
                 //break;
+            case "Beacons":
+                myPoints.SetActive(!myPoints.activeSelf);
+                int BeaconsIsActive = -1;
+                if (myPoints.activeSelf)
+                {
+                    BeaconsIsActive = 0;
+                }
+                return BeaconsIsActive;
+                //break;
+            case "Banners":
+                bool myActive = !myPointBanners[0].activeSelf;
+                // Все, как один
+                foreach (GameObject myBanner in myPointBanners)
+                {
+                    myBanner.SetActive(myActive);
+                }
+                int BannersIsActive = -1;
+                if (myActive)
+                {
+                    BannersIsActive = 0;
+                }
+                return BannersIsActive;
         }
         return -1;
     }

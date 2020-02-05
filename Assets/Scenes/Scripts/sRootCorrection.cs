@@ -50,6 +50,10 @@ public class sRootCorrection : MonoBehaviour
     [SerializeField]
     Text _IFsText;
 
+    // Отображение маяков (путевых точек)
+    [SerializeField]
+    Text _BeaconsText;
+
     // Отображение баннеров путевых точек
     [SerializeField]
     Text _BannersText;
@@ -59,7 +63,8 @@ public class sRootCorrection : MonoBehaviour
 
     string _GlidesStr = " 1 2 3 4 5 6 − ";
     string _STARsStr = " 1 2 3 4 5 − ";
-    string _IFsStr = " E W − ";
+    string _IFsStr = " W E − ";
+    string _BeaconsStr = " + − ";
     string _BannersStr = " + − ";
 
     // Start is called before the first frame update
@@ -109,16 +114,15 @@ public class sRootCorrection : MonoBehaviour
             }
         }
 
-        // Переключение глиссад
-        if (_ComPars.GlideSelection)
+        // Нажата кнопка геймпада "B"
+        if (Input.GetButtonDown("JoyButt1"))
         {
-            // Нажата кнопка "B"
-            if (Input.GetButtonDown("JoyButt1"))
+            // Переключение глиссад
+            if (_ComPars.GlideSelection)
             {
                 int newGlide = _Env.SwitchEnv("Glides");
-                _WorldMessage.myFuncShowMessage("Новая глиссада = " + newGlide, 3);
+                //_WorldMessage.myFuncShowMessage("Новая глиссада = " + newGlide, 3);
                 string myString;
-                _GlidesStr = " 1 2 3 4 5 6 − ";
                 switch (newGlide)
                 {
                     case 0:
@@ -146,21 +150,15 @@ public class sRootCorrection : MonoBehaviour
                         myString = "Ошибка";
                         break;
                 }
-                _GlidesText.text = myString;
-
+                    _GlidesText.text = myString;
             }
-        }
 
-        // Переключение подходов
-        if (_ComPars.STARselection)
-        {
-            // Нажата кнопка "B"
-            if (Input.GetButtonDown("JoyButt1"))
+            // Переключение подходов
+            else if (_ComPars.STARselection)
             {
                 int newSTAR = _Env.SwitchEnv("STARs");
-                _WorldMessage.myFuncShowMessage("Новый подход = " + newSTAR, 3);
+                //_WorldMessage.myFuncShowMessage("Новый подход = " + newSTAR, 3);
                 string myString;
-                _STARsStr = " 1 2 3 4 5 − ";
                 switch (newSTAR)
                 {
                     case 0:
@@ -187,7 +185,75 @@ public class sRootCorrection : MonoBehaviour
                 }
                 _STARsText.text = myString;
             }
+
+            // Переключение точек IF
+            else if (_ComPars.IFselection)
+            {
+                int newIF = _Env.SwitchEnv("IFs");
+                //_WorldMessage.myFuncShowMessage("Новая точка IF = " + newIF, 3);
+                string myString;
+                switch (newIF)
+                {
+                    case 0:
+                        myString = "[" + _IFsStr.Substring(1, 1) + "]" + _IFsStr.Substring(3);
+                        break;
+                    case 1:
+                        myString = _IFsStr.Substring(0, 2) + "[" + _IFsStr.Substring(3, 1) + "]" + _IFsStr.Substring(5);
+                        break;
+                    case -1:
+                        myString = _IFsStr.Substring(0, 4) + "[" + _IFsStr.Substring(5, 1) + "]" + _IFsStr.Substring(7);
+                        break;
+                    default:
+                        myString = "Ошибка";
+                        break;
+                }
+                _IFsText.text = myString;
+            }
+
+            // Включение/выключение маяков
+            else if (_ComPars.BeaconsSwitch)
+            {
+                int NewBeaconsIsActive = _Env.SwitchEnv("Beacons");
+                //_WorldMessage.myFuncShowMessage("Новое состояние маяков = " + NewBeaconsIsActive, 2);
+                string myString;
+                switch (NewBeaconsIsActive)
+                {
+                    case 0:
+                        myString = "[" + _BeaconsStr.Substring(1, 1) + "]" + _BeaconsStr.Substring(3);
+                        break;
+                    case -1:
+                        myString = _BeaconsStr.Substring(0, 2) + "[" + _BeaconsStr.Substring(3, 1) + "]" + _BeaconsStr.Substring(5);
+                        break;
+                    default:
+                        myString = "Ошибка";
+                        break;
+                }
+                _BeaconsText.text = myString;
+            }
+
+            // Включение/выключение баннеров
+            else if (_ComPars.BannersSwitch)
+            {
+                int NewBannersIsActive = _Env.SwitchEnv("Banners");
+                //_WorldMessage.myFuncShowMessage("Новое состояние баннеров = " + NewBannersIsActive, 2);
+                string myString;
+                switch (NewBannersIsActive)
+                {
+                    case 0:
+                        myString = "[" + _BannersStr.Substring(1, 1) + "]" + _BannersStr.Substring(3);
+                        break;
+                    case -1:
+                        myString = _BannersStr.Substring(0, 2) + "[" + _BannersStr.Substring(3, 1) + "]" + _BannersStr.Substring(5);
+                        break;
+                    default:
+                        myString = "Ошибка";
+                        break;
+                }
+                _BannersText.text = myString;
+            }
         }
+
+
 
 
         // Нажата кнопка "Y" - Вызвать меню настроек
